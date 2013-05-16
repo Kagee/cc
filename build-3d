@@ -1,0 +1,112 @@
+os.loadAPI("libstruct")
+b=libstruct
+a=aware
+args = {...}
+ 
+if #args < 1 then
+        error("Arguments: <name>")
+end
+ 
+t=b.load(args[1]..".3d")
+height=t["height"]
+width=t["width"]
+depth=t["depth"]
+endblock=t["endblock"]
+parwidth=(width %2 == 0) -- width er partall
+moveleft=true
+a.setposition("start")
+ 
+function refill(r)
+        if r == nil  then
+                print("refill got r == nil")
+                return
+        end
+        if r == 0  then return end
+        if turtle.getItemCount(r) > 5 then return end
+        if not (endblock==16) then
+                turtle.select(r)
+                for i=endblock+1,16 do
+                        if turtle.compareTo(i) then
+                                turtle.select(i)
+                                turtle.transferTo(r)
+                                free=turtle.getItemSpace(r)
+                        end
+                        turtle.select(r)
+                        if free == 0 then
+                                break
+                        end
+                end
+        end
+        if turtle.getItemCount(r) < 2 then
+                print("Sleeping while waiting for refill for slot " .. r)      
+                while (turtle.getItemCount(r) < 2) do
+                        os.sleep(15)
+                end
+        end
+end
+ 
+function line()
+        print("Building line")
+        for d=0,depth do
+                pos = a.getposition("current")
+                print("Pos: h" .. pos[3]*-1 .. "-w" .. pos[1] .. "-d" .. pos[2])
+                block = t[pos[3]*-1][pos[1]][pos[2]]
+                refill(block)
+                b.place(block)
+                if(d<depth) then
+                        a.df()
+                end
+        end
+end
+ 
+ 
+function turn()
+        if(moveleft) then
+                print("Moving left")
+                a.l()
+                a.df()
+                a.l()
+        else
+                print("Moving right")
+                a.r()
+                a.df()
+                a.r()
+        end
+        moveleft = not moveleft
+end
+ 
+function layer()
+        print("Building layer")
+        for w=0,width do
+                line()
+                if(w<width) then
+                        turn()
+                end
+        end
+end
+ 
+-- we build from the bottom up
+for h=0,height-1 do
+        a.dd()
+end
+ 
+for h=0,height do
+        layer()
+        if not (h == height) then
+                a.du()
+                b.t180()
+                if parwidth then
+                        if h%2 == 0 then
+                                turnleft=false
+                        else
+                                turnleft=true  
+                        end
+                else
+                        turnleft=true
+                end
+        end
+end
+ 
+print("Finised, going home")
+a.goto(a.getposition("start"))
+b.awarecleanup()
