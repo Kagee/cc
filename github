@@ -9,12 +9,24 @@ function main(args)
   if #args < 1 then
     help()
   elseif args[1] == "--update" then
-    update_self()
+    update_self()  
   elseif #args < 4  then
     help()
   else
-    for path in string.gmatch(args[4], "[^,]+") do
-      download(args, path)
+    local a=args
+    branch = "master"
+    if a[1] == "--branch" then
+      branch=a[2]
+      i=1
+      for key,value in pairs(args) do
+        if key > 2 then
+          a[i] = value
+          i=i+1
+        end
+      end
+    end
+    for path in string.gmatch(a[4], "[^,]+") do
+      download(a, branch path)
     end
   end
 end
