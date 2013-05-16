@@ -43,7 +43,7 @@ end
 
 function update_self()
   print("Will update self")
-  download({"Kagee","cc","master";}, "github")
+  download({"Kagee","cc"},"master", "github")
 end
 
 function help()
