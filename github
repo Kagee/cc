@@ -15,7 +15,7 @@ function main(args)
   else
     local a=args
     branch = "test"
-    if a[1] == "--branch" then
+    if a[1] == "--branch" or a[1] == "-b" then
       branch=a[2]
       i=1
       for key,value in pairs(args) do
