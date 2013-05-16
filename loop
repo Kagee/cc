@@ -9,7 +9,8 @@ for key,value in pairs(args) do
     subargs=subargs.." "..value
   end
 end
+
 while true do
   shell.run(args[2], subargs)
-  os.sleep(tonumber(a[1]))
+  os.sleep(tonumber(args[1]))
 end
