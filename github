@@ -2,18 +2,29 @@ if not http then
   error("The Computercraft HTTP API is not enabled")
 end
 
-user="Kagee"
-repo="cc"
-branch="master"
-path="github"
-bp="https://raw.github.com/"
-url=bp..user.."/"..repo.."/"..branch.."/"
-url=url..path
-print("Getting " .. url)
+local args, path, branch, repo, user = {...}
 
-local content = http.get(url)
-print("Deleting " .. path)
-fs.delete(path)
-local file = fs.open(path,"w")
-file.write(content.readAll)
-file.close()
+function main()
+  if user == nil then
+    update_self()
+  else
+    dowload(path)
+  end
+end
+
+function download(p)
+  url = "https://raw.github.com/"..user.."/"..repo.."/"..branch.."/"..p
+  local content = http.get(url)
+  fs.delete(p)
+  local file = fs.open(p, "w")
+  file.write(content.readAll())
+  file.close()
+end
+
+function update_self()
+  print("Called without arguments, will update self")
+  user="Kagee";repo="cc";branch="master";
+  download("github")
+end
+
+main()
