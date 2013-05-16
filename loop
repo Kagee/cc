@@ -1,0 +1,15 @@
+args={...}
+if #args < 3 then
+  print("Arguments: <sleep in seconds> <program> <argument[s]>")
+end
+
+subargs=""
+for key,value in pairs(args) do
+  if key > 2 then
+    subargs=subargs.." "..value
+  end
+end
+while true do
+  shell.run(args[2], subargs)
+  os.sleep(tonumber(a[1]))
+end
