@@ -21,6 +21,7 @@ args = {...}
 
 if #args < 2 then
         error("Arguments: <width of field> <depth of field>")
+        error("Remember to place Rrubber Wodd in slot 1")
 end
 
 width_of_field=tonumber(args[1])
