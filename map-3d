@@ -1,0 +1,99 @@
+os.loadAPI("libstruct")
+a=aware
+b=libstruct
+ 
+args = {...}
+ 
+if #args < 5 then
+        error("Arguments: <height> <width> <depth> <inventory> <name>")
+end
+ 
+height=tonumber(args[1])
+width=tonumber(args[2])
+depth=tonumber(args[3])
+-- last block in inventory to use
+endblock=tonumber(args[4])
+name=args[5]
+ 
+t={}
+--print("Setting start")
+a.setposition("start")
+ 
+height=height-1
+width=width-1
+depth=depth-1
+parwidth=(width %2 == 0) -- width er partall
+moveleft = true
+ 
+for h=0,height do
+        t[h] = {}
+        for w=0,width do
+                t[h][w] = {}
+        end
+end
+ 
+function line()
+        --print("Mapping line")
+        for d=0,depth do
+                pos = a.getposition("current")
+                --print("Pos: h" .. pos[3]*-1 .. "-w" .. pos[1] .. "-d" .. pos[2])
+                t[pos[3]*-1][pos[1]][pos[2]] = b.block(endblock)
+                if(d<depth) then
+                        a.df()
+                end
+        end
+end
+ 
+function turn()
+        if(moveleft) then
+                --print("Moving left")
+                a.l()
+                a.df()
+                a.l()
+        else
+                --print("Moving right")
+                a.r()
+                a.df()
+                a.r()
+        end
+        moveleft = not moveleft
+end
+ 
+function layer()
+        --print("Mapping layer")
+        for w=0,width do
+                line()
+                if(w<width) then
+                        turn()
+                end
+        end
+end
+ 
+for h=0,height do
+        layer()
+        if not (h == height) then
+                a.dd()
+                b.t180()
+                if parwidth then
+                        if h%2 == 0 then
+                                turnleft=false
+                        else
+                                turnleft=true  
+                        end
+                else
+                        turnleft=true
+                end
+        end
+end
+ 
+--print("Finised, going home")
+a.goto(a.getposition("start"))
+ 
+t["height"]=height
+t["width"]=width
+t["depth"]=depth
+t["endblock"]=endblock
+ 
+b.save(t,name .. ".3d")
+print("Saved to ".. name .. ".3d")
+b.awarecleanup()
