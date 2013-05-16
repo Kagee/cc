@@ -2,13 +2,15 @@ if not http then
   error("The Computercraft HTTP API is not enabled")
 end
 
-local args, path, branch, repo, user = {...}
+-- global variabels
+args, path, branch, repo, user = {...}
 
 function main()
   if user == "--update" then
     update_self()
-  elseif path == nil then
+  elseif user == nil then
     print("Arguments: <user> <repo> <branch> <path>")
+    print("Arguments: <user> <repo> <branch> <paths separated by ,>")
     print("If user is --update script will update itself")
   else
     dowload(path)
@@ -28,6 +30,10 @@ function update_self()
   print("Called without arguments, will update self")
   user="Kagee";repo="cc";branch="master";
   download("github")
+end
+
+function split(sep)
+  fields = {str:match((str:gsub("[^"..sep.."]*"..sep, "([^"..sep.."]*)"..sep)))}
 end
 
 main()
