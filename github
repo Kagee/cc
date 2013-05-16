@@ -42,8 +42,10 @@ function split(sep)
 end
 
 function help()
-    print("Arguments: <user> <repo> <branch> <path>")
-    print("Arguments: <user> <repo> <branch> <paths separated by ,>")
+    print("Arguments:")
+    print("github <user> <repo> <branch> <path>")
+    print("or")
+    print("github <user> <repo> <branch> <paths separated by ,>")
     print("If user is --update script will update itself")
     error()
 end
