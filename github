@@ -14,7 +14,7 @@ function main(args)
     help()
   else
     for path in string.gmatch(args[4], "[^,]+") do
-      dowload(args, path)
+      download(args, path)
     end
   end
 end
