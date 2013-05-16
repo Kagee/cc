@@ -1,0 +1,151 @@
+args = {...}
+
+-- Rubber collecting program for the Treetap Turtle
+-- Made by hildenae
+-- Example: (x:rubbertree, T:turtle, C:chest, #:space)
+--
+-- x#x#x#x
+-- #######
+-- x#x#x#x
+-- #######
+-- x#x#x#x
+-- T
+-- C
+--
+-- Command: resin 4 3
+-- Example loop: http://pastebin.com/dz0rDp7p
+-- Place Rubber Wood (ID 627 on FTB MindCrack) in
+-- top-left inventory slot (slot 1)
+-- Expects rubbertrees to be from 1 to 8 blocks of wood
+
+if #args < 2 then
+        error("Arguments: <width of field> <depth of field>")
+end
+
+width_of_field=tonumber(args[1])
+depth_of_field=tonumber(args[2])
+
+rubberwood=1
+
+function harvest_side(height, up, first)
+  if up then
+		move=turtle.up
+		direction="up"
+	else
+		move=turtle.down
+		direction="down"
+	end
+	d = 0
+	for i=1,height do
+		d = d +1
+		turtle.dig()
+		if i < height then
+			--print("Moving " .. direction)
+			move()
+		end
+		turtle.select(rubberwood)
+		if not turtle.compare() then
+			turtle.down()
+			return i
+		end
+		
+	end
+	--print("Tried to harvest #" .. d .. " blocks")
+	return height
+end
+
+function move_cc_around_tree(last)
+	turtle.turnRight()
+	turtle.forward()
+	turtle.turnLeft()
+	turtle.forward()
+	if last == nil or last == false then
+		turtle.turnLeft()
+	end
+end
+
+function move_tree_right()
+	--print("Moving right to next tree")
+	turtle.forward()
+	turtle.forward()
+	turtle.turnLeft()
+end
+
+function move_row_forward()
+	--print("Moving forward to next row")
+	turtle.turnRight()
+	turtle.forward()
+	turtle.turnLeft()
+	turtle.forward()
+	turtle.forward()
+	turtle.turnLeft()
+	turtle.forward()
+	turtle.turnRight()
+end
+
+function harvest_tree()
+	--print("Harvesting tree")
+	up=true
+	he=harvest_side(8,up) -- side 1
+	move_cc_around_tree(false)
+	he=harvest_side(he,not up)   -- side 2
+	move_cc_around_tree(false)
+	he=harvest_side(he, up)   -- side 3
+	move_cc_around_tree(false)
+	he=harvest_side(he, not up)   -- side 4
+	move_cc_around_tree(true) -- back where we started
+end
+
+function harvest_row()
+	--print("Harvesting row")
+	for i=1,width_of_field do
+		harvest_tree()
+		if i < width_of_field then
+			move_tree_right()
+		end
+	end
+	--print("Moving to start of row")
+	turtle.turnRight()
+	turtle.turnRight()
+	for i=1,((width_of_field-1)*2) do
+		turtle.forward()
+	end
+	turtle.turnRight()
+	--print("Harvested row")
+end
+
+function harvest()
+	for i=1,depth_of_field do
+		harvest_row()
+		if i < depth_of_field then
+			move_row_forward()
+		end
+	end
+end
+
+function go_to_start()
+	turtle.turnRight()
+	turtle.forward()
+	turtle.turnRight()
+	for i=1,((depth_of_field-1)*2) do
+		turtle.forward()
+	end
+	turtle.turnRight()
+	turtle.forward()
+	turtle.turnRight()
+end
+
+function drop_loot()
+	turtle.turnRight()
+	turtle.turnRight()
+	for i=2,16 do
+		turtle.select(i)
+		turtle.drop()
+	end
+	turtle.turnRight()
+	turtle.turnRight()
+end
+
+harvest()
+go_to_start()
+drop_loot()
