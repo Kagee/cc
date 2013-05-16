@@ -1,4 +1,4 @@
 cc
 ==
 
-My computercraft scripts
+My computercraft scripts. I recommend downloading using http://pastebin.com/wPtGKMam
