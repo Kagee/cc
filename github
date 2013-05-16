@@ -42,7 +42,7 @@ function download(args, branch, path)
 end
 
 function update_self()
-  print("Will update self")
+  print("Will update self (master branch)")
   download({"Kagee","cc"},"master", "github")
 end
 
