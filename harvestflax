@@ -51,7 +51,7 @@ turtle.turnRight()
 f(turtle.forward)
 turtle.turnLeft()
 
-for i=1,length do
+for i=1,15 do
   turtle.select(i)
   turtle.drop()
 end
