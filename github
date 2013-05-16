@@ -10,14 +10,8 @@ function main(args)
   elseif #args < 4  then
     help()
   else
-    a,b=string.find(args[4], ",", 2)
-    if  b == nil then
-      dowload(args, args[4])
-    else
-      paths=split(",")
-      for key,value in pairs(paths) do
-        dowload(args, paths[1])
-      end
+    for path in string.gmatch(args[4], "[^,]+") do
+      dowload(args, path)
     end
   end
 end
@@ -32,13 +26,8 @@ function download(args, path)
 end
 
 function update_self()
-  print("Called without arguments, will update self")
-  a[1]="Kagee";a[2]="cc";a[3]="master";
-  download(a, "github")
-end
-
-function split(sep)
-  fields = {str:match((str:gsub("[^"..sep.."]*"..sep, "([^"..sep.."]*)"..sep)))}
+  print("Will update self")
+  download({"Kagee","cc","master";}, "github")
 end
 
 function help()
