@@ -1,3 +1,6 @@
+-- created by hildenae
+-- Public domain
+
 os.loadAPI("hutils")
 
 local tArgs, length = {...}, 16
