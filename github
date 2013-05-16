@@ -25,7 +25,7 @@ function main(args)
         end
       end
     end
-    for path in string.gmatch(a[4], "[^,]+") do
+    for path in string.gmatch(a[3], "[^,]+") do
       download(a, branch, path)
     end
   end
@@ -42,8 +42,8 @@ function download(args, branch, path)
 end
 
 function update_self()
-  print("Will update self")
-  download({"Kagee","cc"},"master", "github")
+  print("Will update self (test branch)")
+  download({"Kagee","cc"},"test", "github")
 end
 
 function help()
