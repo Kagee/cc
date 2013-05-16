@@ -5,8 +5,11 @@ end
 local args, path, branch, repo, user = {...}
 
 function main()
-  if user == nil then
+  if user == "--update" then
     update_self()
+  elseif path == nil then
+    print("Arguments: <user> <repo> <branch> <path>")
+    print("If user is --update script will update itself")
   else
     dowload(path)
   end
