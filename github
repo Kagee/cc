@@ -1,3 +1,6 @@
+-- created by hildenae
+-- Public domain
+
 if not http then
   error("The Computercraft HTTP API is not enabled")
 end
