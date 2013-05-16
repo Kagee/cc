@@ -1,0 +1,19 @@
+if not http then
+  error("The Computercraft HTTP API is not enabled")
+end
+
+user="Kagee"
+repo="cc"
+branch="master"
+path="github"
+bp="https://raw.github.com/"
+url=bp..user.."/"..repo.."/"..branch.."/"
+url=url..path
+print("Getting " .. url)
+
+local content = http.get(url)
+print("Deleting " .. path)
+fs.delete(path)
+local file = fs.open(path,"w")
+file.write(content.readAll)
+file.close()
