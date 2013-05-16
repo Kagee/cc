@@ -1,0 +1,5 @@
+github --update
+g="Kagee cc master "
+shell.run("github", g.."collectresin")
+shell.run("github", g.."harvestflax")
+shell.run("github", g.."hutils")
