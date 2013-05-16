@@ -33,8 +33,8 @@ end
 
 function update_self()
   print("Called without arguments, will update self")
-  a[1]="Kagee";args[2]="cc";args[3]="master";
-  download(args, "github")
+  a[1]="Kagee";a[2]="cc";a[3]="master";
+  download(a, "github")
 end
 
 function split(sep)
