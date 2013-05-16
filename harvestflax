@@ -1,0 +1,54 @@
+os.loadAPI("hutils")
+args = {...}
+
+if #args < 1 then
+  error("Arguments: <rowlength>")
+end
+
+length=tonumber(args[1])-1
+
+f=hutils.force
+
+function harvestFlax()
+  if turtle.detectDown() then
+    turtle.digDown()
+    f(turtle.down)
+    turtle.digDown()
+    turtle.digDown()
+    turtle.turnRight()
+    f(turtle.back)
+    f(turtle.down)
+    turtle.select(16)
+    turtle.place()
+    f(turtle.up)
+    f(turtle.up)
+    f(turtle.forward)
+    turtle.turnLeft()
+  end
+end
+
+function harvestRow()
+  for i=1,length do
+    harvestFlax()
+    f(turtle.forward)
+  end
+    harvestFlax()
+end
+
+harvestRow()
+turtle.turnRight()
+f(turtle.forward)
+turtle.turnRight()
+harvestRow()
+
+turtle.turnRight()
+f(turtle.forward)
+turtle.turnLeft()
+
+for i=1,length do
+  turtle.select(i)
+  turtle.drop()
+end
+
+turtle.turnLeft()
+turtle.turnLeft()
