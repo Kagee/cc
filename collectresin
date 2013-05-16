@@ -2,6 +2,7 @@ args = {...}
 
 -- Rubber collecting program for the Treetap Turtle
 -- Made by hildenae
+-- Public domain
 -- Example: (x:rubbertree, T:turtle, C:chest, #:space)
 --
 -- x#x#x#x
