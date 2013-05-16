@@ -17,6 +17,7 @@ function main(args)
 end
 
 function download(args, path)
+  print("Downloading " .. path)
   url = "https://raw.github.com/"..args[1].."/"..args[2].."/"..args[3].."/"..path
   local content = http.get(url)
   fs.delete(path)
