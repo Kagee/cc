@@ -1,11 +1,8 @@
 os.loadAPI("hutils")
-args = {...}
 
-if #args < 1 then
-  error("Arguments: <rowlength>")
-end
+local tArgs, length = {...}, 16
 
-length=tonumber(args[1])-1
+--length=tonumber(args[1])-1
 
 f=hutils.force
 
