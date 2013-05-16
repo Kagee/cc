@@ -25,7 +25,7 @@ function main(args)
         end
       end
     end
-    for path in string.gmatch(a[4], "[^,]+") do
+    for path in string.gmatch(a[3], "[^,]+") do
       download(a, branch, path)
     end
   end
