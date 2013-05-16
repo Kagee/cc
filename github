@@ -14,7 +14,7 @@ function main(args)
     help()
   else
     local a=args
-    branch = "test"
+    branch = "master"
     if a[1] == "--branch" then
       branch=a[2]
       i=1
