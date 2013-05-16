@@ -1,3 +1,6 @@
+-- created by hildenae
+-- Public domain
+
 os.loadAPI("libstruct")
 b=libstruct
 a=aware
