@@ -2,38 +2,50 @@ if not http then
   error("The Computercraft HTTP API is not enabled")
 end
 
--- global variabels
-args, path, branch, repo, user = {...}
-
-function main()
-  if user == "--update" then
+function main(args)
+  if #args < 1 then
+    help()
+  elseif args[1] == "--update" then
     update_self()
-  elseif user == nil then
-    print("Arguments: <user> <repo> <branch> <path>")
-    print("Arguments: <user> <repo> <branch> <paths separated by ,>")
-    print("If user is --update script will update itself")
+  elseif #args < 4  then
+    help()
   else
-    dowload(path)
+    a,b=string.find(args[4], ",", 2)
+    if  b == nil then
+      dowload(args, args[4])
+    else
+      paths=split(",")
+      for key,value in pairs(paths) do
+        dowload(args, paths[1])
+      end
+    end
   end
 end
 
-function download(p)
-  url = "https://raw.github.com/"..user.."/"..repo.."/"..branch.."/"..p
+function download(args, path)
+  url = "https://raw.github.com/"..args[1].."/"..args[2].."/"..args[3].."/"..path
   local content = http.get(url)
-  fs.delete(p)
-  local file = fs.open(p, "w")
+  fs.delete(path)
+  local file = fs.open(path, "w")
   file.write(content.readAll())
   file.close()
 end
 
 function update_self()
   print("Called without arguments, will update self")
-  user="Kagee";repo="cc";branch="master";
-  download("github")
+  a[1]="Kagee";args[2]="cc";args[3]="master";
+  download(args, "github")
 end
 
 function split(sep)
   fields = {str:match((str:gsub("[^"..sep.."]*"..sep, "([^"..sep.."]*)"..sep)))}
 end
 
-main()
+function help()
+    print("Arguments: <user> <repo> <branch> <path>")
+    print("Arguments: <user> <repo> <branch> <paths separated by ,>")
+    print("If user is --update script will update itself")
+    error()
+end
+
+main({...})
