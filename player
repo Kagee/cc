@@ -1,0 +1,4 @@
+while true do
+ local event, player = os.pullEvent()
+ print("Welcome, "..player)
+end
