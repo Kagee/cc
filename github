@@ -14,7 +14,7 @@ function main(args)
     help()
   else
     local a=args
-    branch = "master"
+    branch = "test"
     if a[1] == "--branch" then
       branch=a[2]
       i=1
@@ -26,14 +26,14 @@ function main(args)
       end
     end
     for path in string.gmatch(a[4], "[^,]+") do
-      download(a, branch path)
+      download(a, branch, path)
     end
   end
 end
 
-function download(args, path)
+function download(args, branch, path)
   print("Downloading " .. path)
-  url = "https://raw.github.com/"..args[1].."/"..args[2].."/"..args[3].."/"..path
+  url = "https://raw.github.com/"..args[1].."/"..args[2].."/"..branch.."/"..path
   local content = http.get(url)
   fs.delete(path)
   local file = fs.open(path, "w")
@@ -43,15 +43,14 @@ end
 
 function update_self()
   print("Will update self")
-  download({"Kagee","cc","master";}, "github")
+  download({"Kagee","cc"},"master", "github")
 end
 
 function help()
     print("Arguments:")
-    print("github <user> <repo> <branch> <path>")
-    print("or")
-    print("github <user> <repo> <branch> <paths separated by ,>")
-    print("If user is --update script will update itself")
+    print("github <user> <repo> <path[s] separated by ,>")
+    print("--update script will update itself")
+    print("--branch <branch> as first arguments will download from <branch>")
     error()
 end
 
