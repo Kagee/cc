@@ -1,0 +1,34 @@
+function save(table, name)
+  local file = fs.open(name, "w")
+  file.write(textutils.serialize(table))
+  file.close()
+end
+ 
+function load(name)
+  local file = fs.open(name, "r")
+  local data = file.readAll()
+  file.close()
+  return textutils.unserialize(data)
+end
+ 
+function force(func)
+  while not func() do
+    os.sleep(10)
+  end
+end
+ 
+function f()
+  force(turtle.forward)
+end
+ 
+function b()
+  force(turtle.back)
+end
+ 
+function d()
+  force(turtle.down)
+end
+ 
+function u()
+  force(turtle.down)
+end
