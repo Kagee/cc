@@ -1,6 +1,9 @@
 args = {...}
 
+os.loadAPI("hutils")
+
 -- Rubber collecting program for the Treetap Turtle
+-- Requires the hutils library
 -- Made by hildenae
 -- Public domain
 -- Example: (x:rubbertree, T:turtle, C:chest, #:space)
@@ -24,6 +27,8 @@ if #args < 2 then
         error("Remember to place Rrubber Wodd in slot 1")
 end
 
+f=hutils.force
+
 width_of_field=tonumber(args[1])
 depth_of_field=tonumber(args[2])
 
@@ -43,11 +48,11 @@ function harvest_side(height, up, first)
 		turtle.dig()
 		if i < height then
 			--print("Moving " .. direction)
-			move()
+			f(move)
 		end
 		turtle.select(rubberwood)
 		if not turtle.compare() then
-			turtle.down()
+			f(turtle.down)
 			return i
 		end
 		
@@ -58,9 +63,9 @@ end
 
 function move_cc_around_tree(last)
 	turtle.turnRight()
-	turtle.forward()
+	f(turtle.forward)
 	turtle.turnLeft()
-	turtle.forward()
+	f(turtle.forward)
 	if last == nil or last == false then
 		turtle.turnLeft()
 	end
@@ -68,20 +73,20 @@ end
 
 function move_tree_right()
 	--print("Moving right to next tree")
-	turtle.forward()
-	turtle.forward()
+	f(turtle.forward)
+	f(turtle.forward)
 	turtle.turnLeft()
 end
 
 function move_row_forward()
 	--print("Moving forward to next row")
 	turtle.turnRight()
-	turtle.forward()
+	f(turtle.forward)
 	turtle.turnLeft()
-	turtle.forward()
-	turtle.forward()
+	f(turtle.forward)
+	f(turtle.forward)
 	turtle.turnLeft()
-	turtle.forward()
+	f(turtle.forward)
 	turtle.turnRight()
 end
 
@@ -110,7 +115,7 @@ function harvest_row()
 	turtle.turnRight()
 	turtle.turnRight()
 	for i=1,((width_of_field-1)*2) do
-		turtle.forward()
+		f(turtle.forward)
 	end
 	turtle.turnRight()
 	--print("Harvested row")
@@ -127,13 +132,13 @@ end
 
 function go_to_start()
 	turtle.turnRight()
-	turtle.forward()
+	f(turtle.forward)
 	turtle.turnRight()
 	for i=1,((depth_of_field-1)*2) do
-		turtle.forward()
+		f(turtle.forward)
 	end
 	turtle.turnRight()
-	turtle.forward()
+	f(turtle.forward)
 	turtle.turnRight()
 end
 
