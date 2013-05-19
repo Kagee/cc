@@ -1,6 +1,7 @@
 args={...}
 if #args < 3 then
-  error("Arguments: <sleep in seconds> <program> <argument[s]>")
+  print("Usage: loop <sleep in seconds> <program> <argument[s]>")
+  return
 end
 
 subargs=""
