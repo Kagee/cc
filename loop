@@ -10,7 +10,10 @@ for key,value in pairs(args) do
   end
 end
 
+sleeptime=args[1]
+program=args[2]
+
 while true do
-  shell.run(args[2], subargs)
-  os.sleep(tonumber(args[1]))
+  shell.run(program, subargs)
+  os.sleep(tonumber(sleeptime))
 end
