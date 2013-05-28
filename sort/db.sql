@@ -1,35 +1,93 @@
--- phpMyAdmin SQL Dump
--- version 3.4.10.1deb1
--- http://www.phpmyadmin.net
---
--- Host: localhost
--- Generation Time: May 28, 2013 at 02:56 AM
--- Server version: 5.5.29
--- PHP Version: 5.3.10-1ubuntu3.6
+SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;
+SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
+SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='TRADITIONAL';
 
-SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
-SET AUTOCOMMIT=0;
-START TRANSACTION;
-SET time_zone = "+00:00";
+DROP SCHEMA IF EXISTS `cc_sort` ;
+CREATE SCHEMA IF NOT EXISTS `cc_sort` DEFAULT CHARACTER SET latin1 ;
+USE `cc_sort` ;
+
+-- -----------------------------------------------------
+-- Table `cc_sort`.`blockdata`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `cc_sort`.`blockdata` ;
+
+CREATE  TABLE IF NOT EXISTS `cc_sort`.`blockdata` (
+  `id` INT(8) NOT NULL ,
+  `meta` INT(8) NOT NULL ,
+  `type` ENUM('NORMAL','MULTI','CHARGE') NOT NULL DEFAULT 'NORMAL' ,
+  `name` VARCHAR(50) NOT NULL ,
+  `shortname` VARCHAR(5) NOT NULL ,
+  `amount` INT(8) NOT NULL DEFAULT '0' )
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = latin1;
+
+CREATE UNIQUE INDEX `uni_name` ON `cc_sort`.`blockdata` (`name` ASC) ;
+
+CREATE UNIQUE INDEX `uni_shortname` ON `cc_sort`.`blockdata` (`shortname` ASC) ;
+
+CREATE UNIQUE INDEX `uni_id_meta` ON `cc_sort`.`blockdata` (`id` ASC, `meta` ASC) ;
 
 
-/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
-/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
-/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8 */;
+-- -----------------------------------------------------
+-- Table `cc_sort`.`recipe`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `cc_sort`.`recipe` ;
 
---
--- Database: `cc_sort`
---
-DROP DATABASE `cc_sort`;
-CREATE DATABASE `cc_sort` DEFAULT CHARACTER SET latin1 COLLATE latin1_swedish_ci;
+CREATE  TABLE IF NOT EXISTS `cc_sort`.`recipe` (
+  `target_id` INT(8) NOT NULL ,
+  `target_meta` INT(8) NOT NULL ,
+  `target_amount` INT(8) NOT NULL ,
+  `id` INT(8) NOT NULL ,
+  `meta` INT(8) NOT NULL ,
+  `amount` INT(8) NOT NULL ,
+  PRIMARY KEY (`target_id`, `target_meta`, `target_amount`, `id`, `meta`, `amount`) ,
+  CONSTRAINT `id_meta_pair_must_exsist`
+    FOREIGN KEY (`id` , `meta` )
+    REFERENCES `cc_sort`.`blockdata` (`id` , `meta` )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `id_meta_pair_must_exsist2`
+    FOREIGN KEY (`target_id` , `target_meta` )
+    REFERENCES `cc_sort`.`blockdata` (`id` , `meta` )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = latin1;
+
+CREATE INDEX `target_meta` ON `cc_sort`.`recipe` (`target_id` ASC, `target_meta` ASC) ;
+
+CREATE INDEX `target_meta_2` ON `cc_sort`.`recipe` (`id` ASC, `meta` ASC) ;
+
+
+-- -----------------------------------------------------
+-- Table `cc_sort`.`sort`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `cc_sort`.`sort` ;
+
+CREATE  TABLE IF NOT EXISTS `cc_sort`.`sort` (
+  `id` INT(8) NOT NULL ,
+  `meta` INT(8) NOT NULL ,
+  `direction` ENUM('0','1','2','3','4','5') NOT NULL ,
+  PRIMARY KEY (`id`, `meta`) ,
+  CONSTRAINT `id_meta_must_exsist`
+    FOREIGN KEY (`id` , `meta` )
+    REFERENCES `cc_sort`.`blockdata` (`id` , `meta` )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+CREATE INDEX `id_meta_must_exsist` ON `cc_sort`.`sort` (`id` ASC, `meta` ASC) ;
+
+
+-- -----------------------------------------------------
+-- procedure p_val_recipe
+-- -----------------------------------------------------
+
 USE `cc_sort`;
+DROP procedure IF EXISTS `cc_sort`.`p_val_recipe`;
 
 DELIMITER $$
---
--- Procedures
---
-DROP PROCEDURE IF EXISTS `p_val_recipe`$$
+USE `cc_sort`$$
 CREATE DEFINER=`ftb`@`localhost` PROCEDURE `p_val_recipe`(
     IN      target_id	INT(8)
 ,   IN      target_meta	INT(8)
@@ -41,89 +99,32 @@ CREATE DEFINER=`ftb`@`localhost` PROCEDURE `p_val_recipe`(
     NO SQL
     DETERMINISTIC
 _main: BEGIN
-	DECLARE ERR_GENERIC_USER_DEFINED CONDITION FOR SQLSTATE '45000';
+	DECLARE ERR_AM_LOW CONDITION FOR SQLSTATE '45000';
     IF target_amount < 1 OR amount < 1 THEN
-        SIGNAL ERR_GENERIC_USER_DEFINED
+        SIGNAL ERR_AM_LOW
         SET MESSAGE_TEXT = 'The target or source amount is less than 1';
     ELSEIF target_id = id AND target_meta = meta THEN
-        SIGNAL ERR_GENERIC_USER_DEFINED
+        SIGNAL ERR_AM_LOW
         SET MESSAGE_TEXT = 'Target and source items are the same.';
     END IF;
 END$$
 
 DELIMITER ;
+USE `cc_sort`;
 
--- --------------------------------------------------------
+DELIMITER $$
 
---
--- Table structure for table `blockdata`
---
+USE `cc_sort`$$
+DROP TRIGGER IF EXISTS `cc_sort`.`min_am_ins` $$
+USE `cc_sort`$$
 
-DROP TABLE IF EXISTS `blockdata`;
-CREATE TABLE IF NOT EXISTS `blockdata` (
-  `id` int(8) NOT NULL,
-  `meta` int(8) NOT NULL,
-  `type` enum('NORMAL','MULTI','CHARGE') NOT NULL DEFAULT 'NORMAL',
-  `name` varchar(50) NOT NULL,
-  `shortname` varchar(5) NOT NULL,
-  `amount` int(8) NOT NULL DEFAULT '0',
-  UNIQUE KEY `uni_name` (`name`),
-  UNIQUE KEY `uni_shortname` (`shortname`),
-  UNIQUE KEY `uni_id_meta` (`id`,`meta`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
---
--- Dumping data for table `blockdata`
---
-
-INSERT INTO `blockdata` (`id`, `meta`, `type`, `name`, `shortname`, `amount`) VALUES
-(30478, 1, 'CHARGE', 'Advanced Diamond Drill', 'ADD', 0),
-(751, 1280, 'MULTI', 'Blue Alloy Wire', 'BAW', 0),
-(4, 0, 'NORMAL', 'Cobblestone', 'COBB', 60),
-(264, 0, 'NORMAL', 'Diamond', 'DIA', 1),
-(736, 3, 'MULTI', 'Filter', 'FILT', 0),
-(69, 0, 'NORMAL', 'Lever', 'LEV', 0),
-(331, 0, 'NORMAL', 'Redstone', 'REDST', 45),
-(21302, 0, 'CHARGE', 'Rock Cutter', '', 0),
-(30218, 0, 'NORMAL', 'Rubber', 'RUBB', 0),
-(280, 0, 'NORMAL', 'Stick', 'STI', 64),
-(1, 0, 'NORMAL', 'Stone', 'STO', 0),
-(30188, 0, 'NORMAL', 'UU-Matter', 'UU', 0);
-
--- --------------------------------------------------------
-
---
--- Table structure for table `recipe`
---
-
-DROP TABLE IF EXISTS `recipe`;
-CREATE TABLE IF NOT EXISTS `recipe` (
-  `target_id` int(8) NOT NULL,
-  `target_meta` int(8) NOT NULL,
-  `target_amount` int(8) NOT NULL,
-  `id` int(8) NOT NULL,
-  `meta` int(8) NOT NULL,
-  `amount` int(8) NOT NULL,
-  PRIMARY KEY (`target_id`,`target_meta`,`target_amount`,`id`,`meta`,`amount`),
-  KEY `target_meta` (`target_id`,`target_meta`),
-  KEY `target_meta_2` (`id`,`meta`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
---
--- Dumping data for table `recipe`
---
-
-INSERT INTO `recipe` (`target_id`, `target_meta`, `target_amount`, `id`, `meta`, `amount`) VALUES
-(69, 0, 1, 4, 0, 1),
-(69, 0, 1, 280, 0, 1);
-
---
--- Triggers `recipe`
---
-DROP TRIGGER IF EXISTS `min_am_ins`;
-DELIMITER //
-CREATE TRIGGER `min_am_ins` BEFORE INSERT ON `recipe`
- FOR EACH ROW BEGIN
+CREATE
+DEFINER=`ftb`@`localhost`
+TRIGGER `cc_sort`.`min_am_ins`
+BEFORE INSERT ON `cc_sort`.`recipe`
+FOR EACH ROW
+BEGIN
     CALL p_val_recipe(
 	NEW.target_id,
 	NEW.target_meta,
@@ -132,13 +133,20 @@ CREATE TRIGGER `min_am_ins` BEFORE INSERT ON `recipe`
 	NEW.meta,
 	NEW.amount 
     );
-END
-//
-DELIMITER ;
-DROP TRIGGER IF EXISTS `min_am_upd`;
-DELIMITER //
-CREATE TRIGGER `min_am_upd` BEFORE UPDATE ON `recipe`
- FOR EACH ROW BEGIN
+END$$
+
+
+USE `cc_sort`$$
+DROP TRIGGER IF EXISTS `cc_sort`.`min_am_upd` $$
+USE `cc_sort`$$
+
+
+CREATE
+DEFINER=`ftb`@`localhost`
+TRIGGER `cc_sort`.`min_am_upd`
+BEFORE UPDATE ON `cc_sort`.`recipe`
+FOR EACH ROW
+BEGIN
     CALL p_val_recipe(
 	NEW.target_id,
 	NEW.target_meta,
@@ -147,22 +155,12 @@ CREATE TRIGGER `min_am_upd` BEFORE UPDATE ON `recipe`
 	NEW.meta,
 	NEW.amount 
     );
-END
-//
+END$$
+
+
 DELIMITER ;
 
---
--- Constraints for dumped tables
---
 
---
--- Constraints for table `recipe`
---
-ALTER TABLE `recipe`
-  ADD CONSTRAINT `id_meta_pair_must_exsist` FOREIGN KEY (`id`, `meta`) REFERENCES `blockdata` (`id`, `meta`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  ADD CONSTRAINT `id_meta_pair_must_exsist2` FOREIGN KEY (`target_id`, `target_meta`) REFERENCES `blockdata` (`id`, `meta`) ON DELETE NO ACTION ON UPDATE NO ACTION;
-COMMIT;
-
-/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
-/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
-/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+SET SQL_MODE=@OLD_SQL_MODE;
+SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
+SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
