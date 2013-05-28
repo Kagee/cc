@@ -2,10 +2,10 @@
 -- version 3.4.10.1deb1
 -- http://www.phpmyadmin.net
 --
--- Vert: localhost
--- Generert den: 28. Mai, 2013 02:48 AM
--- Tjenerversjon: 5.5.29
--- PHP-Versjon: 5.3.10-1ubuntu3.6
+-- Host: localhost
+-- Generation Time: May 28, 2013 at 02:56 AM
+-- Server version: 5.5.29
+-- PHP Version: 5.3.10-1ubuntu3.6
 
 SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
 SET AUTOCOMMIT=0;
@@ -27,7 +27,7 @@ USE `cc_sort`;
 
 DELIMITER $$
 --
--- Prosedyrer
+-- Procedures
 --
 DROP PROCEDURE IF EXISTS `p_val_recipe`$$
 CREATE DEFINER=`ftb`@`localhost` PROCEDURE `p_val_recipe`(
@@ -56,7 +56,7 @@ DELIMITER ;
 -- --------------------------------------------------------
 
 --
--- Tabellstruktur for tabell `blockdata`
+-- Table structure for table `blockdata`
 --
 
 DROP TABLE IF EXISTS `blockdata`;
@@ -69,12 +69,11 @@ CREATE TABLE IF NOT EXISTS `blockdata` (
   `amount` int(8) NOT NULL DEFAULT '0',
   UNIQUE KEY `uni_name` (`name`),
   UNIQUE KEY `uni_shortname` (`shortname`),
-  UNIQUE KEY `uni_id_meta` (`id`,`meta`),
-  KEY `meta` (`meta`)
+  UNIQUE KEY `uni_id_meta` (`id`,`meta`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
--- Dataark for tabell `blockdata`
+-- Dumping data for table `blockdata`
 --
 
 INSERT INTO `blockdata` (`id`, `meta`, `type`, `name`, `shortname`, `amount`) VALUES
@@ -94,7 +93,7 @@ INSERT INTO `blockdata` (`id`, `meta`, `type`, `name`, `shortname`, `amount`) VA
 -- --------------------------------------------------------
 
 --
--- Tabellstruktur for tabell `recipe`
+-- Table structure for table `recipe`
 --
 
 DROP TABLE IF EXISTS `recipe`;
@@ -111,7 +110,7 @@ CREATE TABLE IF NOT EXISTS `recipe` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
--- Dataark for tabell `recipe`
+-- Dumping data for table `recipe`
 --
 
 INSERT INTO `recipe` (`target_id`, `target_meta`, `target_amount`, `id`, `meta`, `amount`) VALUES
@@ -119,7 +118,7 @@ INSERT INTO `recipe` (`target_id`, `target_meta`, `target_amount`, `id`, `meta`,
 (69, 0, 1, 280, 0, 1);
 
 --
--- Triggere `recipe`
+-- Triggers `recipe`
 --
 DROP TRIGGER IF EXISTS `min_am_ins`;
 DELIMITER //
@@ -153,11 +152,11 @@ END
 DELIMITER ;
 
 --
--- Begrensninger for dumpede tabeller
+-- Constraints for dumped tables
 --
 
 --
--- Begrensninger for tabell `recipe`
+-- Constraints for table `recipe`
 --
 ALTER TABLE `recipe`
   ADD CONSTRAINT `id_meta_pair_must_exsist` FOREIGN KEY (`id`, `meta`) REFERENCES `blockdata` (`id`, `meta`) ON DELETE NO ACTION ON UPDATE NO ACTION,
