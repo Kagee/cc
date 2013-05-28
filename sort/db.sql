@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Vert: localhost
--- Generert den: 28. Mai, 2013 02:39 AM
+-- Generert den: 28. Mai, 2013 02:48 AM
 -- Tjenerversjon: 5.5.29
 -- PHP-Versjon: 5.3.10-1ubuntu3.6
 
@@ -19,22 +19,19 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8 */;
 
 --
--- Database: `ftb`
+-- Database: `cc_sort`
 --
-DROP DATABASE `ftb`;
-CREATE DATABASE `ftb` DEFAULT CHARACTER SET latin1 COLLATE latin1_swedish_ci;
-USE `ftb`;
+DROP DATABASE `cc_sort`;
+CREATE DATABASE `cc_sort` DEFAULT CHARACTER SET latin1 COLLATE latin1_swedish_ci;
+USE `cc_sort`;
 
 DELIMITER $$
 --
 -- Prosedyrer
 --
-DROP PROCEDURE IF EXISTS `p_val_amount`$$
-
-
 DROP PROCEDURE IF EXISTS `p_val_recipe`$$
 CREATE DEFINER=`ftb`@`localhost` PROCEDURE `p_val_recipe`(
-    IN      target_id  INT(8)
+    IN      target_id	INT(8)
 ,   IN      target_meta	INT(8)
 ,   IN      target_amount INT(8)
 ,   IN      id	INT(8)
@@ -60,8 +57,6 @@ DELIMITER ;
 
 --
 -- Tabellstruktur for tabell `blockdata`
---
--- Opprettet: 28. Mai, 2013 00:39 AM
 --
 
 DROP TABLE IF EXISTS `blockdata`;
@@ -100,8 +95,6 @@ INSERT INTO `blockdata` (`id`, `meta`, `type`, `name`, `shortname`, `amount`) VA
 
 --
 -- Tabellstruktur for tabell `recipe`
---
--- Opprettet: 28. Mai, 2013 00:39 AM
 --
 
 DROP TABLE IF EXISTS `recipe`;
