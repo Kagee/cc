@@ -41,12 +41,12 @@ CREATE DEFINER=`ftb`@`localhost` PROCEDURE `p_val_recipe`(
     NO SQL
     DETERMINISTIC
 _main: BEGIN
-	DECLARE ERR_AM_LOW CONDITION FOR SQLSTATE '45000';
+	DECLARE ERR_GENERIC_USER_DEFINED CONDITION FOR SQLSTATE '45000';
     IF target_amount < 1 OR amount < 1 THEN
-        SIGNAL ERR_AM_LOW
+        SIGNAL ERR_GENERIC_USER_DEFINED
         SET MESSAGE_TEXT = 'The target or source amount is less than 1';
     ELSEIF target_id = id AND target_meta = meta THEN
-        SIGNAL ERR_AM_LOW
+        SIGNAL ERR_GENERIC_USER_DEFINED
         SET MESSAGE_TEXT = 'Target and source items are the same.';
     END IF;
 END$$
